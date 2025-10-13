@@ -18,6 +18,19 @@ const rapidApiHost = process.env.RAPIDAPIHOST
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use('/login', (req, res) => {
+  res.send({
+    token: 'test123'
+  });
+});
+
+
+app.use('/signup', (req, res) => {
+  res.send({
+    token: 'test123'
+  });
+});
+
 
 app.get("/carData", async (req, res) => {
     try {
