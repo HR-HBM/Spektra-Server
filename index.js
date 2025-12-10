@@ -233,8 +233,8 @@ app.post('/signup', async (req, res) => {
 
     } catch (err) {
         console.error(err)
-        if (err) {
-            res.json({detail: err.detail})
+        if (err.code === '23505') {
+            return res.json({ detail: "This email is already registered. Please log in instead." });
         }
     }
 })
