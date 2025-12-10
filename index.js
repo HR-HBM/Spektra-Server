@@ -200,7 +200,7 @@ app.post('/login', async (req, res) => {
 
         const success = await bcrypt.compare(password, users.rows[0].hashed_password)
 
-        const token = jwt.sign({email}, 'secret')
+        const token = jwt.sign({email}, 'secret', { expiresIn: '12h' })
 
         if  (success) {
             res.json({'email': users.rows[0].email, token})    
@@ -227,7 +227,7 @@ app.post('/signup', async (req, res) => {
         await pool.query(`INSERT INTO users (email, hashed_password, user_name) VALUES($1, $2, $3)`,
             [email, hashedPassword, username])
 
-            const token = jwt.sign({email}, 'secret')
+            const token = jwt.sign({email}, 'secret', { expiresIn: '12h' })
 
             res.json ({email, token})
 
