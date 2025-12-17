@@ -43,12 +43,20 @@ app.get('/api-calls/status', authenticateToken, async (req, res) => {
 
     const count = result.rows.length ? result.rows[0].api_calls : 0;
     const CALL_LIMIT = 20 
+
+    const userResult = await pool.query(
+      'SELECT user_name FROM users WHERE email=$1',
+      [user_email]
+    );
+
+    const username = userResult.rows[0]?.user_name || 'User';
     
     // Calculate days remaining in current month
     const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     const daysRemaining = Math.ceil((lastDayOfMonth - now) / (1000 * 60 * 60 * 24));
 
     res.json({
+      username,
       user_email,
       month_year: monthYear,
       callsUsed: count,
