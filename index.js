@@ -157,6 +157,38 @@ app.delete('/api-data', authenticateToken, async (req, res) => {
 });
 
 
+app.post("/api/contact", async (req, res) => {
+  const { name, email, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ success: false });
+  }
+
+  try {
+    await axios.post(
+      "https://api.resend.com/emails",
+      {
+        from: "Spektra <onboarding@resend.dev>",
+        to: [process.env.EMAIL],
+        subject: `New Inquiry for Spektra - From: ${name}`,
+        text: `${name} (${email}) sent a message:\n\n${message}`
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Email error:", error.response?.data || error.message);
+    res.status(500).json({ success: false });
+  }
+});
+
+
 
 app.post('/search-term', authenticateToken, async (req, res) => {
   const { search_term } = req.body;
